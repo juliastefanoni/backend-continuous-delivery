@@ -3,7 +3,6 @@ const { Sequelize } = require('sequelize')
 const databaseConfig = require('../config/database')
 
 const models = []
-
 class DataBase {
   constructor() {
     this.init()
