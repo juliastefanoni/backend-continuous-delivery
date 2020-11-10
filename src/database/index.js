@@ -2,14 +2,25 @@ const { Sequelize } = require('sequelize')
 
 const databaseConfig = require('../config/database')
 
-const models = []
+const CategoryOfWorker = require('../app/models/CategoryOfWorker')
+
+const models = [CategoryOfWorker]
 class DataBase {
   constructor() {
     this.init()
   }
 
-  init() {
-    this.connection = new Sequelize(databaseConfig)
+  async init() {
+    this.databaseURL = process.env[databaseConfig.use_env_variable]
+
+    this.connection = new Sequelize(this.databaseURL, databaseConfig)
+
+    try {
+      await this.connection.authenticate()
+      console.log('Connection has been established successfully.')
+    } catch (error) {
+      console.error('Unable to connect to the database:', error)
+    }
 
     models.map(model => model.init(this.connection))
   }
