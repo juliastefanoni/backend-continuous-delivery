@@ -3,8 +3,9 @@ const { Sequelize } = require('sequelize')
 const databaseConfig = require('../config/database')
 
 const CategoryOfWorker = require('../app/models/CategoryOfWorker')
+const Seniority = require('../app/models/Seniority')
 
-const models = [CategoryOfWorker]
+const models = [CategoryOfWorker, Seniority]
 class DataBase {
   constructor() {
     this.init()
