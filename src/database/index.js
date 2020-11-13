@@ -5,8 +5,9 @@ const databaseConfig = require('../config/database')
 const CategoryOfWorker = require('../app/models/CategoryOfWorker')
 const Seniority = require('../app/models/Seniority')
 const Jobs = require('../app/models/Jobs')
+const Segment = require('../app/models/Segment')
 
-const models = [CategoryOfWorker, Seniority, Jobs]
+const models = [CategoryOfWorker, Seniority, Jobs, Segment]
 class DataBase {
   constructor() {
     this.init()
