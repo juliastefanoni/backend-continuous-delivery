@@ -6,7 +6,15 @@ class JobsController {
   async index(req, res) {
     const jobs = await Jobs.findAll({
       order: [['createdAt', 'DESC']],
-      attributes: ['title', 'address', 'description', 'isPublish'],
+      attributes: [
+        'title',
+        'address',
+        'description',
+        'role',
+        'isPublish',
+        'isForPCD',
+        'synonymsArray',
+      ],
       include: [
         {
           model: CategoryOfWorker,
@@ -32,9 +40,13 @@ class JobsController {
       title,
       address,
       description,
+      role,
       isPublish,
+      isForPCD,
+      synonymsArray,
       categoryofworker_id,
       seniority_id,
+      factory_id,
     } = await Jobs.create(job)
 
     return res.json({
@@ -42,9 +54,13 @@ class JobsController {
       title,
       address,
       description,
+      role,
       isPublish,
+      isForPCD,
+      synonymsArray,
       categoryofworker_id,
       seniority_id,
+      factory_id,
     })
   }
 }

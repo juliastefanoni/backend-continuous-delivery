@@ -6,8 +6,10 @@ const CategoryOfWorker = require('../app/models/CategoryOfWorker')
 const Seniority = require('../app/models/Seniority')
 const Jobs = require('../app/models/Jobs')
 const Segment = require('../app/models/Segment')
+const Factory = require('../app/models/Factory')
+const User = require('../app/models/User')
 
-const models = [CategoryOfWorker, Seniority, Jobs, Segment]
+const models = [CategoryOfWorker, Seniority, Jobs, Segment, Factory, User]
 class DataBase {
   constructor() {
     this.init()

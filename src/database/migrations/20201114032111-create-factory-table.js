@@ -2,40 +2,41 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('jobs', {
+    await queryInterface.createTable('factory', {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
       },
-      title: {
+      name: {
         type: Sequelize.STRING,
         allowNull: false,
+      },
+      cnpj: {
+        type: Sequelize.BIGINT,
+        allowNull: false,
+        unique: true,
+      },
+      description: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
+      mobilephone: {
+        type: Sequelize.BIGINT,
       },
       address: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      description: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      isPublish: {
+      isActive: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
         defaultValue: false,
       },
-      categoryofworker_id: {
+      segment_id: {
         type: Sequelize.INTEGER,
-        references: { model: 'categoryOfWorker', key: 'id' },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
-        allowNull: false,
-      },
-      seniority_id: {
-        type: Sequelize.INTEGER,
-        references: { model: 'seniority', key: 'id' },
+        references: { model: 'segment', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
         allowNull: false,
@@ -52,6 +53,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('jobs')
+    await queryInterface.dropTable('factory')
   },
 }

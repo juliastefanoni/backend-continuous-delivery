@@ -7,7 +7,10 @@ class Jobs extends Model {
         title: DataTypes.STRING,
         address: DataTypes.STRING,
         description: DataTypes.STRING,
+        role: DataTypes.STRING,
         isPublish: DataTypes.BOOLEAN,
+        isForPCD: DataTypes.BOOLEAN,
+        synonymsArray: DataTypes.ARRAY(DataTypes.STRING),
       },
       {
         sequelize,
@@ -28,6 +31,11 @@ class Jobs extends Model {
     this.belongsTo(models.seniority, {
       foreignKey: 'seniority_id',
       as: 'seniority',
+    })
+
+    this.belongsTo(models.factory, {
+      foreignKey: 'factory_id',
+      as: 'factory',
     })
   }
 }
