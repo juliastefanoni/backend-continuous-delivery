@@ -39,7 +39,7 @@ class JobsController {
       ],
     }
 
-    const jobs = await Jobs.findAll(rules)
+    const jobs = await Jobs.findAll({ ...rules, where: { isPublish: true } })
 
     if (factoryID) {
       const jobsFiltered = await Jobs.findAll({
