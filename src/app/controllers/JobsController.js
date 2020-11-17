@@ -1,12 +1,17 @@
 const Jobs = require('../models/Jobs')
 const CategoryOfWorker = require('../models/CategoryOfWorker')
 const Seniority = require('../models/Seniority')
-
+const Factory = require('../models/Factory')
 class JobsController {
   async index(req, res) {
-    const jobs = await Jobs.findAll({
+    const factoryID = req.query.factoryID
+    const jobID = req.query.jobID
+    const publish = req.query.publish
+
+    const rules = {
       order: [['createdAt', 'DESC']],
       attributes: [
+        'id',
         'title',
         'address',
         'description',
@@ -26,8 +31,57 @@ class JobsController {
           as: 'seniority',
           attributes: ['id', 'name'],
         },
+        {
+          model: Factory,
+          as: 'factory',
+          attributes: ['id', 'name'],
+        },
       ],
-    })
+    }
+
+    const jobs = await Jobs.findAll(rules)
+
+    if (factoryID && jobID) {
+      const jobByFactory = await Jobs.findAll({
+        where: {
+          factory_id: factoryID,
+          id: jobID,
+        },
+        ...rules,
+      })
+
+      if (jobByFactory.length < 1) {
+        return res.json({ error: 'Não foi possível encontrar essa vaga!' })
+      }
+
+      return res.json(jobByFactory)
+    }
+
+    if (factoryID) {
+      const jobsFiltered = await Jobs.findAll({
+        where: { factory_id: factoryID, isPublish: publish },
+        ...rules,
+      })
+
+      if (jobsFiltered.length < 1) {
+        return res.json({ error: 'Não foi possível encontrar essa vaga!' })
+      }
+
+      return res.json(jobsFiltered)
+    }
+
+    if (jobID) {
+      const jobsFiltered = await Jobs.findAll({
+        where: { id: jobID, isPublish: publish },
+        ...rules,
+      })
+
+      if (jobsFiltered.length < 1) {
+        return res.json({ error: 'Não foi possível encontrar essa vaga!' })
+      }
+
+      return res.json(jobsFiltered)
+    }
 
     return res.json(jobs)
   }
@@ -62,6 +116,24 @@ class JobsController {
       seniority_id,
       factory_id,
     })
+  }
+
+  async update(req, res) {
+    const jobID = req.params.jobID
+    const factoryID = req.params.factoryID
+
+    const { isPublish, title } = req.body
+
+    const job = await Jobs.findOne({
+      where: {
+        id: jobID,
+        factory_id: factoryID,
+      },
+    })
+
+    const jobUpdated = await job.update({ isPublish, title })
+
+    return res.json(jobUpdated)
   }
 }
 
