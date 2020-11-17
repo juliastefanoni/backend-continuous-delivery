@@ -1,9 +1,11 @@
 const Factory = require('../models/Factory')
 const Segment = require('../models/Segment')
-
 class FactoryController {
   async index(req, res) {
-    const factories = await Factory.findAll({
+    const factoryID = req.query.factoryID
+    const active = req.query.active
+
+    const rules = {
       order: [['createdAt', 'DESC']],
       attributes: [
         'id',
@@ -21,6 +23,28 @@ class FactoryController {
           attributes: ['id', 'name'],
         },
       ],
+    }
+
+    if (factoryID) {
+      const factoryExists = await Factory.findOne({
+        ...rules,
+        where: {
+          id: factoryID,
+        },
+      })
+
+      if (!factoryExists) {
+        return res.json({ error: 'Empresa não existe!' })
+      }
+
+      return res.json(factoryExists)
+    }
+
+    const factories = await Factory.findAll({
+      ...rules,
+      where: {
+        isActive: active,
+      },
     })
 
     return res.json(factories)
@@ -49,6 +73,51 @@ class FactoryController {
       address,
       isActive,
       segment_id,
+    })
+  }
+
+  async update(req, res) {
+    const factoryID = req.params.factoryID
+
+    const { nameFactory } = req.body
+
+    const factory = await Factory.findOne({
+      where: {
+        id: factoryID,
+      },
+      include: [
+        {
+          model: Segment,
+          as: 'segment',
+          attributes: ['id', 'name'],
+        },
+      ],
+    })
+
+    if (!factory) {
+      return res.json({ error: 'Empresa não existe' })
+    }
+
+    const {
+      id,
+      name,
+      cnpj,
+      description,
+      mobilephone,
+      address,
+      isActive,
+      segment,
+    } = await factory.update({ name: nameFactory })
+
+    return res.json({
+      id,
+      name,
+      cnpj,
+      description,
+      mobilephone,
+      address,
+      isActive,
+      segment,
     })
   }
 }
