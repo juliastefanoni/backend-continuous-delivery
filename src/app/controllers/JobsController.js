@@ -41,22 +41,6 @@ class JobsController {
 
     const jobs = await Jobs.findAll(rules)
 
-    if (factoryID && jobID) {
-      const jobByFactory = await Jobs.findAll({
-        where: {
-          factory_id: factoryID,
-          id: jobID,
-        },
-        ...rules,
-      })
-
-      if (jobByFactory.length < 1) {
-        return res.json({ error: 'Não foi possível encontrar essa vaga!' })
-      }
-
-      return res.json(jobByFactory)
-    }
-
     if (factoryID) {
       const jobsFiltered = await Jobs.findAll({
         where: { factory_id: factoryID, isPublish: publish },
