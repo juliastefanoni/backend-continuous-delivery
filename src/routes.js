@@ -6,6 +6,7 @@ const JobsController = require('./app/controllers/JobsController')
 const SegmentController = require('./app/controllers/SegmentController')
 const FactoryController = require('./app/controllers/FactoryController')
 const UserController = require('./app/controllers/UserController')
+const AreaController = require('./app/controllers/AreaController')
 
 const routes = new Router()
 
@@ -16,6 +17,10 @@ routes.post('/workerCategory', CategoryOfWorkerController.store)
 // Rotas senioridade de vagas
 routes.get('/seniority', SeniorityController.index)
 routes.post('/seniority', SeniorityController.store)
+
+// Rotas de areas de vagas
+routes.get('/area', AreaController.index)
+routes.post('/area', AreaController.store)
 
 // Rotas de vagas
 routes.get('/jobs', JobsController.index)
