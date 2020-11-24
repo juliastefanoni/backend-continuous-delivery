@@ -11,6 +11,7 @@ class Jobs extends Model {
         isPublish: DataTypes.BOOLEAN,
         isForPCD: DataTypes.BOOLEAN,
         synonymsArray: DataTypes.ARRAY(DataTypes.STRING),
+        requirements: DataTypes.TEXT,
       },
       {
         sequelize,
@@ -36,6 +37,11 @@ class Jobs extends Model {
     this.belongsTo(models.factory, {
       foreignKey: 'factory_id',
       as: 'factory',
+    })
+
+    this.belongsTo(models.area, {
+      foreignKey: 'area_id',
+      as: 'area',
     })
   }
 }

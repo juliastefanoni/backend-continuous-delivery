@@ -2,6 +2,7 @@ const Jobs = require('../models/Jobs')
 const CategoryOfWorker = require('../models/CategoryOfWorker')
 const Seniority = require('../models/Seniority')
 const Factory = require('../models/Factory')
+const Area = require('../models/Area')
 class JobsController {
   async index(req, res) {
     const factoryID = req.query.factoryID
@@ -19,6 +20,7 @@ class JobsController {
         'isPublish',
         'isForPCD',
         'synonymsArray',
+        'requirements',
       ],
       include: [
         {
@@ -36,14 +38,21 @@ class JobsController {
           as: 'factory',
           attributes: ['id', 'name'],
         },
+        {
+          model: Area,
+          as: 'area',
+          attributes: ['id', 'name'],
+        },
       ],
     }
 
-    const jobs = await Jobs.findAll({ ...rules, where: { isPublish: true } })
-
     if (factoryID) {
+      const where = publish
+        ? { factory_id: factoryID, isPublish: publish }
+        : { factory_id: factoryID }
+
       const jobsFiltered = await Jobs.findAll({
-        where: { factory_id: factoryID, isPublish: publish },
+        where: where,
         ...rules,
       })
 
@@ -56,7 +65,7 @@ class JobsController {
 
     if (jobID) {
       const jobsFiltered = await Jobs.findAll({
-        where: { id: jobID, isPublish: publish },
+        where: { id: jobID },
         ...rules,
       })
 
@@ -67,7 +76,16 @@ class JobsController {
       return res.json(jobsFiltered)
     }
 
-    return res.json(jobs)
+    if (publish) {
+      const jobsWithFilterPublish = await Jobs.findAll({
+        ...rules,
+        where: { isPublish: publish },
+      })
+
+      return res.json(jobsWithFilterPublish)
+    }
+
+    return res.json(await Jobs.findAll(rules))
   }
 
   async store(req, res) {
@@ -82,6 +100,8 @@ class JobsController {
       isPublish,
       isForPCD,
       synonymsArray,
+      requirements,
+      area_id,
       categoryofworker_id,
       seniority_id,
       factory_id,
@@ -96,6 +116,8 @@ class JobsController {
       isPublish,
       isForPCD,
       synonymsArray,
+      requirements,
+      area_id,
       categoryofworker_id,
       seniority_id,
       factory_id,
