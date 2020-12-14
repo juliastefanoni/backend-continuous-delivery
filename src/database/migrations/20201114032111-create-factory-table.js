@@ -20,18 +20,15 @@ module.exports = {
       },
       description: {
         type: Sequelize.TEXT,
-        allowNull: false,
       },
       mobilephone: {
         type: Sequelize.BIGINT,
       },
       address: {
         type: Sequelize.STRING,
-        allowNull: false,
       },
       isActive: {
         type: Sequelize.BOOLEAN,
-        allowNull: false,
         defaultValue: false,
       },
       segment_id: {
@@ -39,7 +36,6 @@ module.exports = {
         references: { model: 'segment', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
-        allowNull: false,
       },
       createdAt: {
         type: Sequelize.DATE,

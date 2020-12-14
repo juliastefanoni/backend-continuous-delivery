@@ -1,5 +1,7 @@
+const Yup = require('yup')
 const Factory = require('../models/Factory')
 const Segment = require('../models/Segment')
+
 class FactoryController {
   async index(req, res) {
     const factoryID = req.query.factoryID
@@ -51,35 +53,55 @@ class FactoryController {
   }
 
   async store(req, res) {
-    const factory = req.body
+    const schema = Yup.object().shape({
+      name: Yup.string().required(),
+      cnpj: Yup.number().min(14).required(),
+      email: Yup.string().email().required(),
+      password: Yup.string().min(6),
+      confirmPassword: Yup.string().when('password', (password, field) =>
+        password ? field.required().oneOf([Yup.ref('password')]) : field
+      ),
+      responsiblePerson: Yup.string(),
+      agreeToTerms: Yup.boolean(),
+      authorization: Yup.boolean(),
+    })
 
-    const {
-      name,
-      cnpj,
-      description,
-      role,
-      mobilephone,
-      address,
-      isActive,
-      segment_id,
-    } = await Factory.create(factory)
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({
+        error:
+          'Validação dos dados falhou! Verifique se preencheu todos os campos obrigatórios!',
+      })
+    }
+
+    const { name, cnpj } = await Factory.create(req.body)
 
     return res.json({
       name,
       cnpj,
-      description,
-      role,
-      mobilephone,
-      address,
-      isActive,
-      segment_id,
     })
   }
 
   async update(req, res) {
-    const factoryID = req.params.factoryID
+    const schema = Yup.object().shape({
+      name: Yup.string(),
+      cnpj: Yup.number().min(14),
+      description: Yup.string().min(100),
+      address: Yup.string(),
+      isActive: Yup.boolean(),
+      segment_id: Yup.number(),
+      responsiblePerson: Yup.string(),
+      agreeToTerms: Yup.boolean(),
+      authorization: Yup.boolean(),
+    })
 
-    const { nameFactory } = req.body
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({
+        error:
+          'Validação dos dados falhou! Verifique se preencheu todos os campos obrigatórios!',
+      })
+    }
+
+    const factoryID = req.params.factoryID
 
     const factory = await Factory.findOne({
       where: {
@@ -103,18 +125,16 @@ class FactoryController {
       name,
       cnpj,
       description,
-      mobilephone,
       address,
       isActive,
       segment,
-    } = await factory.update({ name: nameFactory })
+    } = await factory.update(req.body)
 
     return res.json({
       id,
       name,
       cnpj,
       description,
-      mobilephone,
       address,
       isActive,
       segment,
