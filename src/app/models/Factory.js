@@ -10,6 +10,9 @@ class Factory extends Model {
         mobilephone: DataTypes.INTEGER,
         address: DataTypes.STRING,
         isActive: DataTypes.BOOLEAN,
+        responsiblePerson: DataTypes.STRING,
+        agreeToTerms: DataTypes.BOOLEAN,
+        authorization: DataTypes.BOOLEAN,
       },
       {
         sequelize,

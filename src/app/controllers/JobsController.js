@@ -1,3 +1,5 @@
+const Yup = require('yup')
+
 const Jobs = require('../models/Jobs')
 const CategoryOfWorker = require('../models/CategoryOfWorker')
 const Seniority = require('../models/Seniority')
@@ -89,6 +91,28 @@ class JobsController {
   }
 
   async store(req, res) {
+    const schema = Yup.object().shape({
+      title: Yup.string().required(),
+      address: Yup.string().required(),
+      description: Yup.string().required().min(100),
+      role: Yup.string().required(),
+      isPublish: Yup.boolean().required(),
+      isForPCD: Yup.boolean().required(),
+      synonymsArray: Yup.array().of(Yup.string()).optional(),
+      requirements: Yup.string().required(),
+      categoryofworker_id: Yup.number().required(),
+      area_id: Yup.number().required(),
+      seniority_id: Yup.number().required(),
+      factory_id: Yup.number().required(),
+    })
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({
+        error:
+          'Validação dos dados falhou! Verifique se preencheu todos os campos obrigatórios!',
+      })
+    }
+
     const job = req.body
 
     const {
@@ -128,7 +152,26 @@ class JobsController {
     const jobID = req.params.jobID
     const factoryID = req.params.factoryID
 
-    const { isPublish, title } = req.body
+    const schema = Yup.object().shape({
+      title: Yup.string(),
+      address: Yup.string(),
+      description: Yup.string().min(100),
+      role: Yup.string(),
+      isPublish: Yup.boolean(),
+      isForPCD: Yup.boolean(),
+      synonymsArray: Yup.array().of(Yup.string()),
+      requirements: Yup.string(),
+      categoryofworker_id: Yup.number(),
+      area_id: Yup.number(),
+      seniority_id: Yup.number(),
+    })
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({
+        error:
+          'Validação dos dados falhou! Verifique se os tipos de dados estão corretos.',
+      })
+    }
 
     const job = await Jobs.findOne({
       where: {
@@ -137,7 +180,7 @@ class JobsController {
       },
     })
 
-    const jobUpdated = await job.update({ isPublish, title })
+    const jobUpdated = await job.update(req.body)
 
     return res.json(jobUpdated)
   }
