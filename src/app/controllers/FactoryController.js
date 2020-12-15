@@ -103,7 +103,7 @@ class FactoryController {
     const schema = Yup.object().shape({
       name: Yup.string(),
       cnpj: Yup.number().min(14),
-      description: Yup.string().min(100),
+      description: Yup.string(),
       address: Yup.string(),
       isActive: Yup.boolean(),
       segment_id: Yup.number(),
