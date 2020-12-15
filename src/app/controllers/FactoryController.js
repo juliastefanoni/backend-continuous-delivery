@@ -1,6 +1,7 @@
 const Yup = require('yup')
 const Factory = require('../models/Factory')
 const Segment = require('../models/Segment')
+const User = require('../models/User')
 
 class FactoryController {
   async index(req, res) {
@@ -73,11 +74,28 @@ class FactoryController {
       })
     }
 
-    const { name, cnpj } = await Factory.create(req.body)
+    const userExists = await User.findOne({
+      where: { email: req.body.email },
+    })
+
+    if (userExists) {
+      return res.status(400).json({ error: 'Email já cadastrado' })
+    }
+
+    const { id, name, cnpj } = await Factory.create(req.body)
+
+    const { email, password } = await User.create({
+      user_id: id,
+      email: req.body.email,
+      password: req.body.password,
+      isFactory: true,
+    })
 
     return res.json({
       name,
       cnpj,
+      email,
+      password,
     })
   }
 

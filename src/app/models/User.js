@@ -1,4 +1,5 @@
 const { DataTypes, Model } = require('sequelize')
+const bcrypt = require('bcryptjs')
 
 class User extends Model {
   static init(sequelize) {
@@ -6,6 +7,7 @@ class User extends Model {
       {
         user_id: DataTypes.INTEGER,
         email: DataTypes.STRING,
+        password: DataTypes.VIRTUAL,
         passwordHash: DataTypes.STRING,
         isFactory: DataTypes.BOOLEAN,
       },
@@ -16,7 +18,17 @@ class User extends Model {
       }
     )
 
+    this.addHook('beforeSave', async user => {
+      if (user.password) {
+        user.passwordHash = await bcrypt.hash(user.password, 8)
+      }
+    })
+
     return this
+  }
+
+  checkPassword(password) {
+    return bcrypt.compare(password, this.passwordHash)
   }
 }
 

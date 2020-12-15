@@ -5,10 +5,13 @@ const SeniorityController = require('./app/controllers/SeniorityController')
 const JobsController = require('./app/controllers/JobsController')
 const SegmentController = require('./app/controllers/SegmentController')
 const FactoryController = require('./app/controllers/FactoryController')
-const UserController = require('./app/controllers/UserController')
 const AreaController = require('./app/controllers/AreaController')
+const SessionController = require('./app/controllers/SessionController')
 
 const routes = new Router()
+
+// Criar sessão
+routes.post('/session', SessionController.store)
 
 // Rotas de regime de trabalho de vagas
 routes.get('/workerCategory', CategoryOfWorkerController.index)
@@ -35,10 +38,5 @@ routes.post('/segment', SegmentController.store)
 routes.get('/factory', FactoryController.index)
 routes.post('/factory', FactoryController.store)
 routes.put('/factory/:factoryID', FactoryController.update)
-
-// Rotas usuário
-
-routes.get('/user', UserController.index)
-routes.post('/user', UserController.store)
 
 module.exports = routes
