@@ -36,6 +36,7 @@ routes.get('/jobs', JobsController.index)
 
 // Listar empresas
 routes.get('/factory', FactoryController.index)
+routes.post('/factory', FactoryController.store)
 
 routes.use(authMiddleware)
 
@@ -44,7 +45,6 @@ routes.post('/jobs', JobsController.store)
 routes.put('/jobs/:jobID/factory/:factoryID', JobsController.update)
 
 // Rotas empresa
-routes.post('/factory', FactoryController.store)
 routes.put('/factory/:factoryID', FactoryController.update)
 
 module.exports = routes
